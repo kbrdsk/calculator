@@ -13,9 +13,10 @@ function appendButtonValue(button){
 }
 
 function parseExpression(expression){
-	let i = expression.lastIndexOf(')');
-	if(i > -1){
-		return parseParen(expression.slice(0, i), expression.slice(i+1));
+	//let i = expression.lastIndexOf(')');
+	if(expression.includes('(')){
+		return parseParen(expression);
+		//return parseParen(expression.slice(0, i), expression.slice(i+1));
 	}
 	i = expression.lastIndexOf('+');
 	if(i > -1){
@@ -41,15 +42,22 @@ function parseExpression(expression){
 
 }
 
-function parseParen(str1, str2){
-	let i = str1.lastIndexOf(')');
+function parseParen(expression){
+	let i = expression.lastIndexOf('('),
+		j = expression.indexOf(')', i);
+	let partialParse = 
+			expression.slice(0, i) +
+			parseExpression(expression.slice(i + 1, j)).toString() +
+			expression.slice(j + 1);
+	return parseExpression(partialParse);
+	/*let i = str1.lastIndexOf(')');
 	let j = str1.lastIndexOf('(');
 	if(i > j){
-		let partialParse = parseParen(str1.slice(0, i), str1.slice(i+1)).toString() + str2;
+		let partialParse = parseParen(str1.slice(0, i), str1.slice(i+1) + ')').toString() + str2;
 		return parseExpression(partialParse);
 	}
 	let partialParse = str1.slice(0, j) + parseExpression(str1.slice(j + 1)).toString() + str2;
-	return parseExpression(partialParse);
+	return parseExpression(partialParse);*/
 }
 
 function parseAddition(str1, str2){
