@@ -1,26 +1,34 @@
 let expression = '';
 
-let expressionButtons = Array.from(document.querySelectorAll("button.expression"));
+let display = document.querySelector("#expression-display"),
+	expressionButtons = Array.from(document.querySelectorAll("button.expression")),
+	delButton = document.querySelector("button.delete"),
+	evalButton = document.querySelector("button.evaluate");
+
 expressionButtons.forEach(button => 
 					button.addEventListener('click', e => appendButtonValue(e.target)));
-//let delButton = document.querySelector("button.del");
-//delButton.addEventListener('click', del);
-let evalButton = document.querySelector("button.evaluate");
-evalButton.addEventListener('click', () => {
-	console.log(parseExpression(expression));
-	clear();
-})
+delButton.addEventListener('click', () => del());
+evalButton.addEventListener('click', () => evaluate());
+
 
 function clear(){
 	expression = '';
 }
 
+function evaluate(){
+	display.textContent = `${expression} = ${parseExpression(expression)}`;
+	clear();	
+}
+
 function del(){
 	expression = expression.slice(0, -1);
+	display.textContent = expression;
 }
 
 function appendButtonValue(button){
-	expression = expression + button.value;}
+	expression = expression + button.value;
+	display.textContent = expression;
+}
 
 function parseExpression(expression){
 	if(expression.includes('(')){
@@ -47,22 +55,19 @@ function parseExpression(expression){
 		return parseExponent(...splitExpression(expression, i));
 	}
 	return parseNumber(expression);
-
-}
-
-function splitExpression(expression, index){
-	return [expression.slice(0, index), expression.slice(index + 1)];
 }
 
 function parseParen(expression){
-	let l = expression.lastIndexOf('('),
-		r = expression.indexOf(')', l);
-	let innerExpression = parseExpression(expression.slice(l + 1, r)).toString();
-	let partialParse = 
-			expression.slice(0, l) +
-			innerExpression +
-			expression.slice(r + 1);
-	return parseExpression(partialParse);
+	try{
+		let l = expression.lastIndexOf('('),
+			r = expression.indexOf(')', l);
+		let innerExpression = parseExpression(expression.slice(l + 1, r)).toString();
+		let partialParse = 
+				expression.slice(0, l) +
+				innerExpression +
+				expression.slice(r + 1);
+		return parseExpression(partialParse);
+	}catch(error){return NaN;}
 }
 
 function parseAddition(exp1, exp2){
@@ -86,5 +91,10 @@ function parseExponent(exp1, exp2){
 }
 
 function parseNumber(exp){
+	exp = exp || NaN;
 	return +exp;
+}
+
+function splitExpression(expression, index){
+	return [expression.slice(0, index), expression.slice(index + 1)];
 }
