@@ -1,14 +1,18 @@
 let expression = '';
 
 let display = document.querySelector("#expression-display"),
-	expressionButtons = Array.from(document.querySelectorAll("button.expression")),
+	buttons = Array.from(document.querySelectorAll("button")),
+	expressionButtons = buttons.filter(button => 
+							button.classList.contains('expression')),
 	delButton = document.querySelector("button.delete"),
 	evalButton = document.querySelector("button.evaluate");
 
 expressionButtons.forEach(button => 
-					button.addEventListener('click', e => appendButtonValue(e.target)));
-delButton.addEventListener('click', () => del());
-evalButton.addEventListener('click', () => evaluate());
+					button.addEventListener('mousedown',
+						e => appendValue(e.target.value)));
+delButton.addEventListener('mousedown', () => del());
+evalButton.addEventListener('mousedown', () => evaluate());
+window.addEventListener('keydown', e => activateKey(e.key));
 
 
 function clear(){
@@ -25,8 +29,15 @@ function del(){
 	display.textContent = expression;
 }
 
-function appendButtonValue(button){
-	expression = expression + button.value;
+function activateKey(key){
+	const EXPRESSION_KEYS = '1234567890-+*^()';
+	if(EXPRESSION_KEYS.includes(key)) appendValue(key);
+	if(key === "Enter" || key === "=") evaluate();
+	if(key === "Delete" || key === "Backspace") del();
+}
+
+function appendValue(value){
+	expression = expression + value;
 	display.textContent = expression;
 }
 
