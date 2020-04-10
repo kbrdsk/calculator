@@ -1,5 +1,16 @@
 let expression = '';
 
+let expressionButtons = Array.from(document.querySelectorAll("button.expression"));
+expressionButtons.forEach(button => 
+					button.addEventListener('click', e => appendButtonValue(e.target)));
+//let delButton = document.querySelector("button.del");
+//delButton.addEventListener('click', del);
+let evalButton = document.querySelector("button.evaluate");
+evalButton.addEventListener('click', () => {
+	console.log(parseExpression(expression));
+	clear();
+})
+
 function clear(){
 	expression = '';
 }
@@ -9,8 +20,7 @@ function del(){
 }
 
 function appendButtonValue(button){
-	expression = expression + button.value;
-}
+	expression = expression + button.value;}
 
 function parseExpression(expression){
 	if(expression.includes('(')){

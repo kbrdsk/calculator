@@ -1,0 +1,23 @@
+#button-container {
+	height: 400px;
+	width: 500px;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: repeat(5, 1fr);
+}
+
+.number{
+	grid-area: "number";
+}
+
+.operation{
+	grid-area: "operation";
+}
+
+.paren{
+	grid-area: "paren";
+}
+
+.evaluate{
+	grid-area: "evaluate";
+}
