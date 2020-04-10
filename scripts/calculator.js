@@ -1,6 +1,8 @@
-let expression = '';
+let expression = '',
+	answer = '';
 
-let display = document.querySelector("#expression-display"),
+let expressionDisplay = document.querySelector("#expression-display"),
+	answerDisplay = document.querySelector("#answer-display"),
 	buttons = Array.from(document.querySelectorAll("button")),
 	expressionButtons = buttons.filter(button => 
 							button.classList.contains('expression')),
@@ -20,17 +22,26 @@ function clear(){
 }
 
 function evaluate(){
-	display.textContent = `${expression} = ${parseExpression(expression)}`;
+	if(answerDisplay.textContent) return;
+	answer = `${parseExpression(expression)}`;
+	answerDisplay.textContent = answer;
+	expressionDisplay.style.color = "#bbb"
 	clear();	
+}
+
+function updateExpressionDisplay () {
+	expressionDisplay.textContent = expression;
+	expressionDisplay.style.color = "#444";
+	answerDisplay.textContent = '';
 }
 
 function del(){
 	expression = expression.slice(0, -1);
-	display.textContent = expression;
+	updateExpressionDisplay();
 }
 
 function activateKey(key){
-	const EXPRESSION_KEYS = '1234567890-+*^()';
+	const EXPRESSION_KEYS = '1234567890-+*^().';
 	if(EXPRESSION_KEYS.includes(key)) appendValue(key);
 	if(key === "Enter" || key === "=") evaluate();
 	if(key === "Delete" || key === "Backspace") del();
@@ -38,7 +49,7 @@ function activateKey(key){
 
 function appendValue(value){
 	expression = expression + value;
-	display.textContent = expression;
+	updateExpressionDisplay();
 }
 
 function parseExpression(expression){
@@ -50,7 +61,7 @@ function parseExpression(expression){
 		return parseAddition(...splitExpression(expression, i));
 	}
 	i = expression.lastIndexOf('-');
-	if(i > -1){
+	if(i > -1 && !'*^/'.includes(expression[i-1])){
 		return parseSubtraction(...splitExpression(expression, i));
 	}
 	i = expression.lastIndexOf('*');
@@ -86,7 +97,7 @@ function parseAddition(exp1, exp2){
 }
 
 function parseSubtraction(exp1, exp2){
-	return parseExpression(exp1) - parseExpression(exp2);
+	return parseExpression(exp1 || '0') - parseExpression(exp2);
 }
 
 function parseMultiplication(exp1, exp2){
@@ -102,7 +113,7 @@ function parseExponent(exp1, exp2){
 }
 
 function parseNumber(exp){
-	exp = exp || NaN;
+	if(!exp) return NaN;
 	return +exp;
 }
 
